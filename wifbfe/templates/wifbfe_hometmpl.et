@@ -32,7 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
         <fb:editor-button value="Update"/>
     </fb:editor-buttonset>
 </fb:editor>
-<%@ display_code(CodeFun) when is_fun(CodeFun) %>
+<%@ display_code(CodeFun) when is_function(CodeFun) %>
 <p>Current code: <% CodeFun(wiicode) %></p>
 <fb:if-section-not-added section="info">
     <p><strong>Important!</strong> You must give this application permission to display content on the "Info" tab of your profile before this Wii code will be displayed.</p>
