@@ -49,10 +49,22 @@ handle_request('POST', "/facebook/update", Arg) ->
     ReqVars = lists:keysort(1, yaws_api:parse_query(Arg)),
     case [lists:keysearch("fb_sig_user", 1, ReqVars), lists:keysearch("wiicode", 1, ReqVars)] of
         [{value, {_, User}}, {value, {_, WiiCode}}] ->
-            wifbfe_utils:set_wiicode(list_to_binary(User), list_to_binary(WiiCode));
+            wifbfe_utils:set_wiicode(list_to_binary(User), list_to_binary(WiiCode)),
+            Items = [{obj, [
+                {"label", list_to_binary(WiiCode)},
+                {"link", <<"http://apps.new.facebook.com/wiiinfo/">>}
+            ]}]
+            erlang_facebook:call(custom, [
+                {"method", "facebook.profile.setInfo"},
+                {"title", "Wii Codes"},
+                {"type", "1"},
+                {"uid", User},
+                {"info_fields", rfc4627:encode([{obj, [{"field", <<"Wii Codes">>}, {"items", Items}]}])}
+            ]),
+            ok;
         _ -> ok
     end,
-    make_response(200, wrap_body(wifbfe_hometmpl, {dialog, {"Updated", "Your Wii code has been set."}}));
+    make_response(200, wrap_body(wifbfe_hometmpl, {redirect, {empty}}));
 
 %% Catchall
 handle_request(_, _, _Arg) -> % catchall

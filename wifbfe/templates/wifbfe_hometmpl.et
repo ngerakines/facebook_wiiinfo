@@ -23,7 +23,6 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 %>
 <%@ index({FBFun, Code}) %>
-
 <div class="dashboard_header">
     <div class="dh_links clearfix">
     <!--
@@ -57,7 +56,6 @@ OTHER DEALINGS IN THE SOFTWARE.
     </fb:dialog-content>
     <fb:dialog-button type="submit" value="Update" form_id="update_wiicode" />
 </fb:dialog>
-
 <p>This is the Wii codes application. Enter your Wii code into this application and it will be displayed on your "Info" tab on your profile. Thats really all it does.</p>
 <% display_code(Code) %>
 <%@ display_code(CodeFun) when is_function(CodeFun) %>
@@ -67,6 +65,4 @@ OTHER DEALINGS IN THE SOFTWARE.
     <fb:add-section-button section="info" />
 </fb:if-section-not-added>
 <%@ display_code(_) %><p>You do not have a code set.</p>
-<%@ dialog({Title, Body}) %>
-<h1><% Title %></h1>
-<p><% Body %></p>
+<%@ redirect(_) %><fb:redirect url="http://apps.new.facebook.com/wiiinfo/" />
