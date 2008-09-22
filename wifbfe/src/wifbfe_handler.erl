@@ -49,7 +49,7 @@ handle_request('POST', "/facebook/update", Arg) ->
     ReqVars = lists:keysort(1, yaws_api:parse_query(Arg)),
     case [lists:keysearch("fb_sig_user", 1, ReqVars), lists:keysearch("wiicode", 1, ReqVars)] of
         [{value, {_, User}}, {value, {_, WiiCode}}] ->
-            wifbfe_utils:set_wiicode(list_to_binary(User), list_to_binary(WiiCode))
+            wifbfe_utils:set_wiicode(list_to_binary(User), list_to_binary(WiiCode));
         _ -> ok
     end,
     make_response(200, wrap_body(wifbfe_hometmpl, {dialog, {"Updated", "Your Wii code has been set."}}));
