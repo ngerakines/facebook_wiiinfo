@@ -53,13 +53,13 @@ handle_request('POST', "/facebook/update", Arg) ->
             Items = [{obj, [
                 {"label", list_to_binary(WiiCode)},
                 {"link", <<"http://apps.new.facebook.com/wiiinfo/">>}
-            ]}]
+            ]}],
             erlang_facebook:call(custom, [
                 {"method", "facebook.profile.setInfo"},
-                {"title", "Wii Codes"},
+                {"title", "Wii Info"},
                 {"type", "1"},
                 {"uid", User},
-                {"info_fields", rfc4627:encode([{obj, [{"field", <<"Wii Codes">>}, {"items", Items}]}])}
+                {"info_fields", rfc4627:encode([{obj, [{"field", <<"My Wii">>}, {"items", Items}]}])}
             ]),
             ok;
         _ -> ok
