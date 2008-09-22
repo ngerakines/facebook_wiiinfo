@@ -25,11 +25,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 <%@ index({FBFun, Code}) %>
 <div class="dashboard_header">
     <div class="dh_links clearfix">
-    <!--
         <div class="dh_actions">
-            <a href="http://apps.facebook.com/wiiinfo/" requirelogin=1><fb:intl>My Wii Code</fb:intl></a>
+            <a href="http://en.wikipedia.org/wiki/MIT_License"><fb:intl>License</fb:intl></a>
+            <span class="pipe">|</span><a href="http://github.com/ngerakines/facebook_wiiinfo/"><fb:intl>Source Code</fb:intl></a>
         </div>
-    -->
     </div>
     <div class="dh_titlebar clearfix">
         <h2>My Wii Code</h2>
@@ -49,14 +48,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 <fb:dialog id="my_dialog" cancel_button=1>
     <fb:dialog-title>Update your Wii Code</fb:dialog-title>
     <fb:dialog-content>
-        Wii Code: 
-        <form action="/wiiinfo/update" id="update_wiicode">
-            <input type="text" name="wiicode" value="yes"/>
-        </form>
+        Wii Code: <form action="/wiiinfo/update" id="update_wiicode"><input type="text" name="wiicode" value="yes"/></form>
     </fb:dialog-content>
     <fb:dialog-button type="submit" value="Update" form_id="update_wiicode" />
 </fb:dialog>
-<p>This is the Wii codes application. Enter your Wii code into this application and it will be displayed on your "Info" tab on your profile. Thats really all it does.</p>
+<p>Thanks for using the <strong>Wii Info</strong> application. This simple Facebook application allows you to cleanly display your Wii code on the Info tab of your profile. Displaying your Wii code on the Info tab of your profile is this application's only feature.</p>
+<p>This application was written by <a href="http://blog.socklabs.com/">Nick Gerakines</a> and is open source software under the <a href="http://en.wikipedia.org/wiki/MIT_License">MIT license</a>. All of the code is on GitHub in a <a href="http://github.com/ngerakines/facebook_wiiinfo/">public repository</a>.</p>
 <% display_code(Code) %>
 <%@ display_code(CodeFun) when is_function(CodeFun) %>
 <p>Current code: <% CodeFun(wiicode) %></p>
