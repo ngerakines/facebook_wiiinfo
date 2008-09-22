@@ -1,0 +1,10 @@
+<%@ index(_) %>
+<h1>Welcome!</h1>
+<p>This is the Wii codes application. Enter your Wii code into this application and it will be displayed on your "Info" tab on your profile. Thats really all it does.</p>
+
+<fb:editor action="/wiiinfo/update" labelwidth="100">
+    <fb:editor-text label="Wii Code" name="wiicode" value=""/>
+    <fb:editor-buttonset>
+        <fb:editor-button value="Update"/>
+    </fb:editor-buttonset>
+</fb:editor>
