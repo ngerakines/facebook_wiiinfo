@@ -10,7 +10,7 @@ template:
 	erl -noshell -eval '[erltl:compile(F, [{outdir, "ebin"}, report_errors, report_warnings, nowarn_unused_vars]) || F <- filelib:wildcard("templates/*.et")].' -pa ebin -s init stop
 
 start:
-	erl -setcookie wiiinfopass -name wiiinfoapp@`hostname` -pa ebin -yaws embedded true -boot start_sasl -eval '[application:start(X) || X <- [inets, yaws, wifbfe]].' -detached 
+	erl -setcookie wiiinfopass -name wiiinfoapp@`hostname` -pa ebin -yaws embedded true -boot start_sasl -mnesia dir 'wiiinfo.mnesia' -eval '[application:start(X) || X <- [inets, yaws, mnesia, wifbfe]].' -detached 
 
 start-ctl:
 	erl -setcookie wiiinfopass -name wiiinfoctp@`hostname` -pa ebin -remsh wiiinfoapp@`hostname`
