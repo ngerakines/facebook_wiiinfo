@@ -22,12 +22,20 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 %>
-<%@ index(_) %>
+<%@ index({FBFun, Code}) %>
 <h1>Welcome!</h1>
 <p>This is the Wii codes application. Enter your Wii code into this application and it will be displayed on your "Info" tab on your profile. Thats really all it does.</p>
+<% display_code(Code) %>
 <fb:editor action="/wiiinfo/update" labelwidth="100">
     <fb:editor-text label="Wii Code" name="wiicode" value=""/>
     <fb:editor-buttonset>
         <fb:editor-button value="Update"/>
     </fb:editor-buttonset>
 </fb:editor>
+<%@ display_code(CodeFun) when is_fun(CodeFun) %>
+<p>Current code: <% CodeFun(wiicode) %></p>
+<fb:if-section-not-added section="info">
+    <p><strong>Important!</strong> You must give this application permission to display content on the "Info" tab of your profile before this Wii code will be displayed.</p>
+    <fb:add-section-button section="info" />
+</fb:if-section-not-added>
+<%@ display_code(_) %><p>You do not have a code set.</p>

@@ -36,7 +36,11 @@ wrap_body(Outer, {Inner, Args}) ->
 
 handle_request('POST', "/facebook/", Arg) ->
     FBFun = erlang_facebook:facebook_fun(yaws_api:parse_post(Arg)),
-    make_response(200, wrap_body(wifbfe_hometmpl, {index, {FBFun}}));
+    Code = try wifbfe_utils:get_wiicode(FBFun(user)) of
+        [Record] -> wiicode_fun(Record);
+        _ -> none
+    catch _ -> none end,
+    make_response(200, wrap_body(wifbfe_hometmpl, {index, {FBFun, Code}}));
 
 %% Catchall
 handle_request(_, _, _Arg) -> % catchall
@@ -52,3 +56,8 @@ make_header(Type) -> [{header, ["Content-Type: ", Type]}].
 
 make_all_response(Status, Headers, Message) ->
     [{status, Status}, {allheaders, Headers}, {html, Message}].
+
+wiicode_fun(Record) ->
+    fun (user) -> Record#wiicode.user;
+        (wiicode) -> Record#wiicode.wiicode
+    end.

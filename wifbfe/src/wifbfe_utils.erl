@@ -22,16 +22,27 @@
 %% OTHER DEALINGS IN THE SOFTWARE.
 -module(wifbfe_utils).
 
--export([get_wiicode/1]).
+-export([get_wiicode/1, set_wiicode/2]).
 
 -include_lib("stdlib/include/qlc.hrl").
 
 -record(wiicode, {user, wiicode}).
 
-%% mnesia:activity(transaction, fun() -> qlc:e(qlc:q([E || E <- mnesia:table(wiicode), E#wiicode.user == <<"11223344">>]))end).
+%% mnesia:activity(transaction, fun() -> qlc:e(qlc:q([E || E <- mnesia:table(wiicode), E#wiicode.user == <<"500025891">>])) end).
+get_wiicode(User) when is_list(User) ->
+    get_wiicode(list_to_binary(User));
+
 get_wiicode(User) when is_binary(User) ->
     F = fun() ->
         qlc:e(qlc:q([E || E <- mnesia:table(wiicode),
             E#wiicode.user == User]))
+    end,
+    mnesia:activity(transaction, F).
+
+%% mnesia:activity(transaction, fun() -> mnesia:write(#wiicode{ user = <<"500025891">>, wiicode = <<"0002-8039-8968-xxxx">> }) end).
+
+set_wiicode(User, WiiCode) ->
+    F = fun() ->
+        mnesia:write(#wiicode{ user = User, wiicode = WiiCode })
     end,
     mnesia:activity(transaction, F).
