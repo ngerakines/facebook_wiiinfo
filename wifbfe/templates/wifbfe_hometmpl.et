@@ -23,15 +23,45 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 %>
 <%@ index({FBFun, Code}) %>
-<h1>Welcome!</h1>
+
+<div class="dashboard_header">
+    <!--
+    <div class="dh_links clearfix">
+        <div class="dh_actions">
+            <a href="http://apps.facebook.com/wiiinfo/" requirelogin=1><fb:intl>My Wii Code</fb:intl></a>
+        </div>
+    </div>
+    -->
+    <div class="dh_titlebar clearfix">
+        <h2>My Wii Code</h2>
+        <div class="dh_new_media_shell">
+            <a requirelogin=1 href="#" class="dh_new_media" clicktoshowdialog="my_dialog">
+                <div class="tr">
+                    <div class="bl">
+                        <div class="br">
+                            <span><fb:intl>Update Wii Code</fb:intl></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<fb:dialog id="my_dialog" cancel_button=1>
+    <fb:dialog-title>Update your Wii Code</fb:dialog-title>
+    <fb:dialog-content>
+        Wii Code: 
+        <form action="/wiiinfo/update" id="update_wiicode">
+            <p/>
+            <input type="text" name="wiicode" value="yes"/>
+        </form>
+    </fb:dialog-content>
+    <fb:dialog-button type="submit" value="Update" form_id="update_wiicode" />
+</fb:dialog>
+
 <p>This is the Wii codes application. Enter your Wii code into this application and it will be displayed on your "Info" tab on your profile. Thats really all it does.</p>
 <% display_code(Code) %>
-<fb:editor action="/wiiinfo/update" labelwidth="100" requirelogin="1">
-    <fb:editor-text label="Wii Code" name="wiicode" value=""/>
-    <fb:editor-buttonset>
-        <fb:editor-button value="Update"/>
-    </fb:editor-buttonset>
-</fb:editor>
+
 <%@ display_code(CodeFun) when is_function(CodeFun) %>
 <p>Current code: <% CodeFun(wiicode) %></p>
 <fb:if-section-not-added section="info">
