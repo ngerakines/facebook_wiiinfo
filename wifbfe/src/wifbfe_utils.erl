@@ -24,6 +24,8 @@
 
 -export([get_wiicode/1]).
 
+-include_lib("stdlib/include/qlc.hrl").
+
 -record(wiicode, {user, wiicode}).
 
 %% mnesia:activity(transaction, fun() -> qlc:e(qlc:q([E || E <- mnesia:table(wiicode), E#wiicode.user == <<"11223344">>]))end).
