@@ -25,13 +25,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 <%@ index({FBFun, Code}) %>
 
 <div class="dashboard_header">
-    <!--
     <div class="dh_links clearfix">
+    <!--
         <div class="dh_actions">
             <a href="http://apps.facebook.com/wiiinfo/" requirelogin=1><fb:intl>My Wii Code</fb:intl></a>
         </div>
-    </div>
     -->
+    </div>
     <div class="dh_titlebar clearfix">
         <h2>My Wii Code</h2>
         <div class="dh_new_media_shell">
@@ -52,7 +52,6 @@ OTHER DEALINGS IN THE SOFTWARE.
     <fb:dialog-content>
         Wii Code: 
         <form action="/wiiinfo/update" id="update_wiicode">
-            <p/>
             <input type="text" name="wiicode" value="yes"/>
         </form>
     </fb:dialog-content>
@@ -61,7 +60,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 <p>This is the Wii codes application. Enter your Wii code into this application and it will be displayed on your "Info" tab on your profile. Thats really all it does.</p>
 <% display_code(Code) %>
-
 <%@ display_code(CodeFun) when is_function(CodeFun) %>
 <p>Current code: <% CodeFun(wiicode) %></p>
 <fb:if-section-not-added section="info">
@@ -69,3 +67,6 @@ OTHER DEALINGS IN THE SOFTWARE.
     <fb:add-section-button section="info" />
 </fb:if-section-not-added>
 <%@ display_code(_) %><p>You do not have a code set.</p>
+<%@ dialog({Title, Body}) %>
+<h1><% Title %></h1>
+<p><% Body %></p>
