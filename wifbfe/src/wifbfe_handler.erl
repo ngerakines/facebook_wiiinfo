@@ -26,6 +26,8 @@
 
 -include_lib("yaws/include/yaws_api.hrl").
 
+-record(wiicode, {user, wiicode}).
+
 out(Arg) ->
     Req = Arg#arg.req,
     handle_request(Req#http_request.method, Arg#arg.server_path, Arg).
