@@ -37,7 +37,9 @@ get_wiicode(User) when is_binary(User) ->
         qlc:e(qlc:q([E || E <- mnesia:table(wiicode),
             E#wiicode.user == User]))
     end,
-    mnesia:activity(transaction, F).
+    mnesia:activity(transaction, F);
+
+get_wiicode(_) -> [].
 
 %% mnesia:activity(transaction, fun() -> mnesia:write(#wiicode{ user = <<"500025891">>, wiicode = <<"0002-8039-8968-xxxx">> }) end).
 
