@@ -31,8 +31,10 @@ OTHER DEALINGS IN THE SOFTWARE.
         </div>
     </div>
     <div class="dh_titlebar clearfix">
-        <h2>My Wii Code</h2>
-        <div class="dh_new_media_shell">
+        <h2 style="background-image: url('http://photos-911.ll.facebook.com/photos-ll-sctm/v43/143/27313053911/app_2_27313053911_7513.gif');">
+	    Wii Info
+	</h2>
+	<div class="dh_new_media_shell">
             <a requirelogin=1 href="#" class="dh_new_media" clicktoshowdialog="my_dialog">
                 <div class="tr">
                     <div class="bl">
@@ -53,13 +55,14 @@ OTHER DEALINGS IN THE SOFTWARE.
     <fb:dialog-button type="submit" value="Update" form_id="update_wiicode" />
 </fb:dialog>
 <p>Thanks for using the <strong>Wii Info</strong> application. This simple Facebook application allows you to cleanly display your Wii code on the Info tab of your profile. Displaying your Wii code on the Info tab of your profile is this application's only feature.</p>
-<p>This application was written by <a href="http://blog.socklabs.com/">Nick Gerakines</a> and is open source software under the <a href="http://en.wikipedia.org/wiki/MIT_License">MIT license</a>. All of the code is on GitHub in a <a href="http://github.com/ngerakines/facebook_wiiinfo/">public repository</a>.</p>
 <% display_code(Code) %>
+<hr />
+<p>This application was written by <a href="http://blog.socklabs.com/">Nick Gerakines</a> and is open source software under the <a href="http://en.wikipedia.org/wiki/MIT_License">MIT license</a>. All of the code is on GitHub in a <a href="http://github.com/ngerakines/facebook_wiiinfo/">public repository</a>.</p>
 <%@ display_code(CodeFun) when is_function(CodeFun) %>
-<p>Current code: <% CodeFun(wiicode) %></p>
+<p>Wii Code: <strong><% CodeFun(wiicode) %></strong></p>
 <fb:if-section-not-added section="info">
     <p><strong>Important!</strong> You must give this application permission to display content on the "Info" tab of your profile before this Wii code will be displayed.</p>
     <fb:add-section-button section="info" />
 </fb:if-section-not-added>
-<%@ display_code(_) %><p>You do not have a code set.</p>
+<%@ display_code(_) %><h3>You do not have a code set.</h3>
 <%@ redirect(_) %><fb:redirect url="http://apps.new.facebook.com/wiiinfo/" />
