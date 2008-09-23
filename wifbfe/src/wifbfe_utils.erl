@@ -65,8 +65,7 @@ set_wiicode(User, WiiCode) ->
 
 set_gamecode(User, Game, Code) ->
     F = fun() ->
-        Id = lists:concat([User, Game]),
-        mnesia:write(#game{ id = Id, user = User, game = Game, code = Code})
+        mnesia:write(#game{ id = {User, Game}, user = User, game = Game, code = Code})
     end,
     mnesia:activity(transaction, F).
 

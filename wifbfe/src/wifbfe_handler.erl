@@ -57,6 +57,17 @@ handle_request('POST', "/facebook/update", Arg) ->
     end,
     make_response(200, wrap_body(wifbfe_hometmpl, {redirect, {empty}}));
 
+handle_request('POST', "/facebook/setgame", Arg) ->
+    ReqVars = lists:keysort(1, yaws_api:parse_post(Arg)),
+    case [lists:keysearch("fb_sig_user", 1, ReqVars), lists:keysearch("code", 1, ReqVars), lists:keysearch("game", 1, ReqVars)] of
+        [{value, {_, User}}, {value, {_, Code}}, {value, {_, Game}}] ->
+            wifbfe_utils:set_gamecode(list_to_binary(User), list_to_binary(Game), list_to_binary(Code)),
+            update_profile(User),
+            ok;
+        _ -> ok
+    end,
+    make_response(200, wrap_body(wifbfe_hometmpl, {redirect, {empty}}));
+
 %% Catchall
 handle_request(_, _, _Arg) -> % catchall
     make_response(501, "<h1>Error!</h1><p>Action not implemented.</p>").
@@ -86,24 +97,18 @@ gamecode_fun(Record) ->
 
 update_profile(User) ->
     [WiiCode] = wifbfe_utils:get_wiicode(User),
-    GameCodes = wifbfe_utils:get_gamecode(User),
-    Items = lists:foldl(
-        fun (R, Acc) when is_record(R, wiicode) ->
-            Item = {obj, [{"field", <<"My Wii">>}, {"items", [{obj, [
-                {"label", list_to_binary(R#wiicode.wiicode)},
-                {"link", <<"http://apps.new.facebook.com/wiiinfo/">>}
-            ]}]}]},
-            [Item | Acc];
-            (R, Acc) when is_record(R, game) ->
-                Item = {obj, [{"field", R#game.game}, {"items", [{obj, [
-                    {"label", list_to_binary(R#game.code)},
-                    {"link", <<"http://apps.new.facebook.com/wiiinfo/">>}
-                ]}]}]},
-            [Item | Acc]
-        end,
-        [],
-        [WiiCode | GameCodes]
-    ),
+    GameCodes = [
+        {obj, [{"field", Game#game.game}, {"items", [{obj, [
+            {"label", Game#game.code},
+            {"link", <<"http://apps.new.facebook.com/wiiinfo/">>}
+        ]}]}]}
+    || Game <- wifbfe_utils:get_gamecode(User)],
+    Items = [
+        {obj, [{"field", <<"My Wii Code">>}, {"items", [{obj, [
+            {"label", WiiCode#wiicode.wiicode},
+            {"link", <<"http://apps.new.facebook.com/wiiinfo/">>}
+        ]}]}]} | GameCodes
+    ],
     erlang_facebook:call(custom, [
         {"method", "facebook.profile.setInfo"},
         {"title", "Wii Info"},
@@ -111,3 +116,4 @@ update_profile(User) ->
         {"uid", User},
         {"info_fields", rfc4627:encode(Items)}
     ]).
+ 
