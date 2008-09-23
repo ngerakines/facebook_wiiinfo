@@ -29,6 +29,7 @@
 -export([build_templates/0, base_url/0]).
 
 -record(wiicode, {user, wiicode}).
+-record(game, {id, user, game, code}).
 
 start(_Type, _Args) ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
@@ -53,7 +54,10 @@ start_phase(mnesia, _, _) ->
     ok.
 
 create_table(wiicode) ->
-    mnesia:create_table(wiicode, [{disc_copies, [node()]}, {attributes, record_info(fields, wiicode)}]).
+    mnesia:create_table(wiicode, [{disc_copies, [node()]}, {attributes, record_info(fields, wiicode)}]);
+
+create_table(game) ->
+    mnesia:create_table(game, [{disc_copies, [node()]}, {attributes, record_info(fields, game)}]).
 
 init(_) ->
     {ok, {{one_for_one, 2, 10}, [

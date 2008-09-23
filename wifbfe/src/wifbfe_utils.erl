@@ -22,11 +22,13 @@
 %% OTHER DEALINGS IN THE SOFTWARE.
 -module(wifbfe_utils).
 
--export([get_wiicode/1, set_wiicode/2]).
+-export([get_wiicode/1, set_wiicode/2, get_gamecode/1, set_gamecode/3]).
+-export([get_games/0]).
 
 -include_lib("stdlib/include/qlc.hrl").
 
 -record(wiicode, {user, wiicode}).
+-record(game, {id, user, game, code}).
 
 %% mnesia:activity(transaction, fun() -> qlc:e(qlc:q([E || E <- mnesia:table(wiicode), E#wiicode.user == <<"500025891">>])) end).
 get_wiicode(User) when is_list(User) ->
@@ -35,11 +37,23 @@ get_wiicode(User) when is_list(User) ->
 get_wiicode(User) when is_binary(User) ->
     F = fun() ->
         qlc:e(qlc:q([E || E <- mnesia:table(wiicode),
-            E#wiicode.user == User]))
+            E#wiicode.user =:= User]))
     end,
     mnesia:activity(transaction, F);
 
 get_wiicode(_) -> [].
+
+get_gamecode(User) when is_list(User) ->
+    get_gamecode(list_to_binary(User));
+
+get_gamecode(User) when is_binary(User) ->
+    F = fun() ->
+        qlc:e(qlc:q([E || E <- mnesia:table(game),
+            E#game.user =:= User]))
+    end,
+    mnesia:activity(transaction, F);
+
+get_gamecode(_) -> [].
 
 %% mnesia:activity(transaction, fun() -> mnesia:write(#wiicode{ user = <<"500025891">>, wiicode = <<"0002-8039-8968-xxxx">> }) end).
 
@@ -48,3 +62,17 @@ set_wiicode(User, WiiCode) ->
         mnesia:write(#wiicode{ user = User, wiicode = WiiCode })
     end,
     mnesia:activity(transaction, F).
+
+set_gamecode(User, Game, Code) ->
+    F = fun() ->
+        Id = lists:concat([User, Game]),
+        mnesia:write(#game{ id = Id, user = User, game = Game, code = Code})
+    end,
+    mnesia:activity(transaction, F).
+
+get_games() -> [
+        "Guitar Hero: Aerosmith",
+        "Guitar Hero III: Legends of Rock",
+        "Mario Kart Wii",
+        "Super Smash Bros. Brawl"
+    ].

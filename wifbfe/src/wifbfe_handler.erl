@@ -27,6 +27,7 @@
 -include_lib("yaws/include/yaws_api.hrl").
 
 -record(wiicode, {user, wiicode}).
+-record(game, {id, user, game, code}).
 
 out(Arg) ->
     Req = Arg#arg.req,
@@ -38,29 +39,19 @@ wrap_body(Outer, {Inner, Args}) ->
 
 handle_request('POST', "/facebook/", Arg) ->
     FBFun = erlang_facebook:facebook_fun(yaws_api:parse_post(Arg)),
-    Code = try wifbfe_utils:get_wiicode(FBFun(user)) of
+    WiiCode = try wifbfe_utils:get_wiicode(FBFun(user)) of
         [Record] -> wiicode_fun(Record);
         _ -> none
     catch _ -> none end,
-    make_response(200, wrap_body(wifbfe_hometmpl, {index, {FBFun, Code}}));
+    GameCodes = [gamecode_fun(X) || X <- wifbfe_utils:get_gamecode(FBFun(user))],
+    make_response(200, wrap_body(wifbfe_hometmpl, {index, {FBFun, WiiCode, GameCodes}}));
 
 handle_request('POST', "/facebook/update", Arg) ->
-    FBFun = erlang_facebook:facebook_fun(yaws_api:parse_post(Arg)),
     ReqVars = lists:keysort(1, yaws_api:parse_query(Arg)),
     case [lists:keysearch("fb_sig_user", 1, ReqVars), lists:keysearch("wiicode", 1, ReqVars)] of
         [{value, {_, User}}, {value, {_, WiiCode}}] ->
             wifbfe_utils:set_wiicode(list_to_binary(User), list_to_binary(WiiCode)),
-            Items = [{obj, [
-                {"label", list_to_binary(WiiCode)},
-                {"link", <<"http://apps.new.facebook.com/wiiinfo/">>}
-            ]}],
-            erlang_facebook:call(custom, [
-                {"method", "facebook.profile.setInfo"},
-                {"title", "Wii Info"},
-                {"type", "1"},
-                {"uid", User},
-                {"info_fields", rfc4627:encode([{obj, [{"field", <<"My Wii">>}, {"items", Items}]}])}
-            ]),
+            update_profile(User),
             ok;
         _ -> ok
     end,
@@ -85,3 +76,38 @@ wiicode_fun(Record) ->
     fun (user) -> Record#wiicode.user;
         (wiicode) -> Record#wiicode.wiicode
     end.
+
+gamecode_fun(Record) ->
+    fun (id) -> Record#game.id;
+        (user) -> Record#game.user;
+        (game) -> Record#game.game;
+        (code) -> Record#game.code
+    end.
+
+update_profile(User) ->
+    [WiiCode] = wifbfe_utils:get_wiicode(User),
+    GameCodes = wifbfe_utils:get_gamecode(User),
+    Items = lists:foldl(
+        fun (R, Acc) when is_record(R, wiicode) ->
+            Item = {obj, [{"field", <<"My Wii">>}, {"items", [{obj, [
+                {"label", list_to_binary(R#wiicode.wiicode)},
+                {"link", <<"http://apps.new.facebook.com/wiiinfo/">>}
+            ]}]}]},
+            [Item | Acc];
+            (R, Acc) when is_record(R, game) ->
+                Item = {obj, [{"field", R#game.game}, {"items", [{obj, [
+                    {"label", list_to_binary(R#game.code)},
+                    {"link", <<"http://apps.new.facebook.com/wiiinfo/">>}
+                ]}]}]},
+            [Item | Acc]
+        end,
+        [],
+        [WiiCode | GameCodes]
+    ),
+    erlang_facebook:call(custom, [
+        {"method", "facebook.profile.setInfo"},
+        {"title", "Wii Info"},
+        {"type", "1"},
+        {"uid", User},
+        {"info_fields", rfc4627:encode(Items)}
+    ]).
