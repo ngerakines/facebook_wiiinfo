@@ -47,7 +47,7 @@ start_phase(mnesia, _, _) ->
         _ -> ok
     end,
     ExistingTables = mnesia:system_info(tables) -- [schema],
-    Tables = [wiicode],
+    Tables = [wiicode, game],
     [begin
         create_table(Table)
     end || Table <- Tables, not lists:member(Table, ExistingTables)],
